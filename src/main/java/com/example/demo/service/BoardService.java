@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.BoardIdResponseDto;
 import com.example.demo.dto.BoardPostRequestDto;
 import com.example.demo.dto.BoardResponseDto;
+import com.example.demo.dto.BoardUpdateRequestDto;
 import com.example.demo.entity.Board;
 import com.example.demo.repository.BoardRepository;
 import jakarta.transaction.Transactional;
@@ -47,5 +48,15 @@ public class BoardService {
 
     }
 
+    //게시글 단건 수정 -> 게시글의 제목과 내용 수정
+    @Transactional
+    public BoardResponseDto updateBoard(Long boardId, BoardUpdateRequestDto dto) {
 
+        Board foundBoard = boardRepository.findByIdOrElseThrow(boardId);
+
+        foundBoard.updateTitle(dto.getTitle());
+        foundBoard.updateContents(dto.getContents());
+
+        return new BoardResponseDto(foundBoard);
+    }
 }

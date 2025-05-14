@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.BoardIdResponseDto;
 import com.example.demo.dto.BoardPostRequestDto;
 import com.example.demo.dto.BoardResponseDto;
+import com.example.demo.dto.BoardUpdateRequestDto;
 import com.example.demo.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,14 @@ public class BoardController {
        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @PutMapping("/boards/{boardId}")
+    public ResponseEntity<BoardResponseDto> updateBoard(
+            @PathVariable("boardId") Long boardId,
+            @RequestBody BoardUpdateRequestDto dto
+    ){
+        BoardResponseDto responseDto = boardService.updateBoard(boardId, dto);
 
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 }
