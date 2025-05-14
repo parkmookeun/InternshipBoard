@@ -59,4 +59,12 @@ public class BoardService {
 
         return new BoardResponseDto(foundBoard);
     }
+
+    public void deleteBoard(Long boardId) {
+
+        Board foundBoard = boardRepository.findByIdOrElseThrow(boardId);
+
+        boardRepository.delete(foundBoard);
+
+    }
 }
