@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,7 +50,8 @@ public class BoardController {
                                     )
                             }
                     )
-            )})
+            )
+    })
     public ResponseEntity<BoardIdResponseDto> postBoard(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
@@ -103,7 +105,28 @@ public class BoardController {
                                     )
                             }
                     )
-            )})
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글 조회 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "기본 응답",
+                                            summary = "기본 게시글 응답 예시",
+                                            value = """
+                                                    {
+                                                       "httpStatus" : "NOT_FOUND",
+                                                       "errorMessage" : "1에 맞는 게시글이 존재하지 않습니다!"
+                                                     }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     public ResponseEntity<BoardResponseDto> findBoard(
             @PathVariable("boardId") Long boardId
     ){
@@ -183,7 +206,28 @@ public class BoardController {
                                     )
                             }
                     )
-            )})
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글 수정 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "기본 응답",
+                                            summary = "기본 게시글 응답 예시",
+                                            value = """
+                                                    {
+                                                       "httpStatus" : "NOT_FOUND",
+                                                       "errorMessage" : "1에 맞는 게시글이 존재하지 않습니다!"
+                                                     }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     public ResponseEntity<BoardResponseDto> updateBoard(
             @PathVariable("boardId") Long boardId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -213,6 +257,35 @@ public class BoardController {
 
     @DeleteMapping("/boards/{boardId}")
     @Tag(name = "게시글 삭제", description = "게시글을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 수정 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글 삭제 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "기본 응답",
+                                            summary = "기본 게시글 응답 예시",
+                                            value = """
+                                                    {
+                                                       "httpStatus" : "NOT_FOUND",
+                                                       "errorMessage" : "1에 맞는 게시글이 존재하지 않습니다!"
+                                                     }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     public ResponseEntity<Void> deleteBoard(
         @PathVariable("boardId") Long boardId
     ){
