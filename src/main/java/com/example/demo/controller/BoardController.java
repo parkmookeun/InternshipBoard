@@ -4,7 +4,7 @@ import com.example.demo.dto.BoardIdResponseDto;
 import com.example.demo.dto.BoardPostRequestDto;
 import com.example.demo.dto.BoardResponseDto;
 import com.example.demo.dto.BoardUpdateRequestDto;
-import com.example.demo.entity.Board;
+import com.example.demo.global.ErrorResponse;
 import com.example.demo.service.BoardService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,11 +40,31 @@ public class BoardController {
                             schema = @Schema(implementation = BoardIdResponseDto.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "등록 성공시, 해당 게시글ID를 반환합니다.",
+                                            summary = "성공 응답 예시",
                                             value = """
                                                     {
                                                       "id": 1
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "데이터 유효성 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "내용은 빈칸인 경우 실패 응답",
+                                            summary = "실패 응답 예시",
+                                            value = """
+                                                    {
+                                                      "httpStatus": "BAD_REQUEST",
+                                                      "errorMessage": "내용은 빈칸일 수 없습니다!"
                                                     }
                                                     """
                                     )
@@ -91,8 +110,8 @@ public class BoardController {
                             schema = @Schema(implementation = BoardResponseDto.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "보드ID에 맞는 글을 반환합니다.",
+                                            summary = "성공 응답 예시",
                                             value = """
                                                     {
                                                        "id": 1,
@@ -109,14 +128,14 @@ public class BoardController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "게시글 조회 실패",
+                    description = "존재하지 않는 게시글",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "게시글이 존재하지 않을 경우",
+                                            summary = "실패 응답 예시",
                                             value = """
                                                     {
                                                        "httpStatus" : "NOT_FOUND",
@@ -148,8 +167,8 @@ public class BoardController {
                             schema = @Schema(implementation = BoardResponseDto.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "게시글 목록을 리스트로 조회합니다.",
+                                            summary = "성공 응답 예시",
                                             value = """
                                                     [
                                                         {
@@ -192,8 +211,8 @@ public class BoardController {
                             schema = @Schema(implementation = BoardResponseDto.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "보드ID에 해당하는 게시글을 수정합니다.",
+                                            summary = "성공 응답 예시",
                                             value = """
                                                     {
                                                        "id": 1,
@@ -210,19 +229,39 @@ public class BoardController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "게시글 수정 실패",
+                    description = "존재하지 않는 게시글",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "보드ID에 해당하는 게시글이 없는 경우",
+                                            summary = "실패 응답 예시",
                                             value = """
                                                     {
                                                        "httpStatus" : "NOT_FOUND",
                                                        "errorMessage" : "1에 맞는 게시글이 존재하지 않습니다!"
                                                      }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "데이터 유효성 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "데이터 유효성 검사에 실패한 경우",
+                                            summary = "실패 응답 예시",
+                                            value = """
+                                                    {
+                                                      "httpStatus": "BAD_REQUEST",
+                                                      "errorMessage": "내용은 빈칸일 수 없습니다!"
+                                                    }
                                                     """
                                     )
                             }
@@ -261,21 +300,21 @@ public class BoardController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "게시글 수정 성공",
+                    description = "게시글 삭제 성공",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE
                     )
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "게시글 삭제 실패",
+                    description = "존재하지 않는 게시글",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "기본 응답",
-                                            summary = "기본 게시글 응답 예시",
+                                            name = "보드ID에 해당하는 게시글이 존재하지 않는 경우",
+                                            summary = "실패 응답 예시",
                                             value = """
                                                     {
                                                        "httpStatus" : "NOT_FOUND",
