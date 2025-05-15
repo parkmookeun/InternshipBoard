@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -71,7 +72,7 @@ public class BoardController {
                             }
                     )
             )
-            @RequestBody BoardPostRequestDto dto
+            @Valid @RequestBody BoardPostRequestDto dto
     ){
         BoardIdResponseDto responseDto = boardService.postBoard(dto);
 
@@ -247,7 +248,7 @@ public class BoardController {
                             }
                     )
             )
-            @RequestBody BoardUpdateRequestDto dto
+            @Valid @RequestBody BoardUpdateRequestDto dto
     ){
         BoardResponseDto responseDto = boardService.updateBoard(boardId, dto);
 
