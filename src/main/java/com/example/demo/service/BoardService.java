@@ -8,6 +8,10 @@ import com.example.demo.entity.Board;
 import com.example.demo.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,12 +44,17 @@ public class BoardService {
     }
 
     //게시글 다건 조회 -> 모든 게시글 조회 -> 추후에, 페이징 추가
-    public List<BoardResponseDto> findBoards() {
+//    public List<BoardResponseDto> findBoards() {
+//
+//        List<Board> boardList = boardRepository.findAll();
+//
+//        return boardList.stream().map(BoardResponseDto::new).toList();
+//
+//    }
+    public Page<Board> findBoards(int pageSize, int pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by("createdAt").descending());
 
-        List<Board> boardList = boardRepository.findAll();
-
-        return boardList.stream().map(BoardResponseDto::new).toList();
-
+        return boardRepository.findAll(pageable);
     }
 
     //게시글 단건 수정 -> 게시글의 제목과 내용 수정

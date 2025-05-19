@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.BoardIdResponseDto;
-import com.example.demo.dto.BoardPostRequestDto;
-import com.example.demo.dto.BoardResponseDto;
-import com.example.demo.dto.BoardUpdateRequestDto;
+import com.example.demo.dto.*;
+import com.example.demo.entity.Board;
 import com.example.demo.global.ErrorResponse;
 import com.example.demo.service.BoardService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -170,35 +170,51 @@ public class BoardController {
                                             name = "게시글 목록을 리스트로 조회합니다.",
                                             summary = "성공 응답 예시",
                                             value = """
-                                                    [
-                                                        {
-                                                           "id": 1,
-                                                           "createdAt": "2025-05-14T14:41:14.460Z",
-                                                           "writer": "작성자1",
-                                                           "title": "글 제목1",
-                                                           "contents": "글 내용1",
-                                                           "views": 1
-                                                        },
-                                                        {
-                                                           "id": 2,
-                                                           "createdAt": "2025-05-14T14:41:14.460Z",
-                                                           "writer": "작성자2",
-                                                           "title": "글 제목2",
-                                                           "contents": "글 내용2",
-                                                           "views": 1
-                                                        }
-                                                    ]
+                                                    {
+                                                       "content": [
+                                                         {
+                                                           "id": 19,
+                                                           "createdAt": "2025-05-20T00:44:30",
+                                                           "writer": "홍길동",
+                                                           "title": "테스트 제목",
+                                                           "contents": "테스트 내용입니다.",
+                                                           "views": 0
+                                                         },
+                                                         {
+                                                           "id": 20,
+                                                           "createdAt": "2025-05-20T00:44:30",
+                                                           "writer": "홍길동",
+                                                           "title": "테스트 제목",
+                                                           "contents": "테스트 내용입니다.",
+                                                           "views": 0
+                                                         }
+                                                       ],
+                                                       "pageNumber": 1,
+                                                       "pageSize": 10,
+                                                       "totalPages": 10,
+                                                       "totalElements": 100,
+                                                       "first": true,
+                                                       "last": false
+                                                     }
                                                     """
                                     )
                             }
                     )
             )})
-    public ResponseEntity<List<BoardResponseDto>> findBoards(){
-       List<BoardResponseDto> responseDto =  boardService.findBoards();
+    public ResponseEntity<PageResponseDto<Board>> findBoards(
+            @Parameter(description = "페이지 번호", example = "0")
+            @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
 
-       return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            @Parameter(description = "페이지 크기", example = "10")
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+
+    ){
+        Page<Board> boardPage = boardService.findBoards(pageSize, pageNumber);
+
+        PageResponseDto<Board> boardPageResponseDto = PageResponseDto.of(boardPage);
+
+        return new ResponseEntity<>(boardPageResponseDto, HttpStatus.OK);
     }
-
 
     @PutMapping("/boards/{boardId}")
     @Tag(name = "게시글 수정", description = "게시글을 수정합니다.")
