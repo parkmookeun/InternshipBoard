@@ -116,6 +116,7 @@ public class BoardController {
                                                     {
                                                        "id": 1,
                                                        "createdAt": "2025-05-14T14:41:14.460Z",
+                                                       "modifiedAt": "2025-05-14T14:41:14.460Z",
                                                        "writer": "작성자",
                                                        "title": "글 제목",
                                                        "contents": "글 내용",
@@ -175,6 +176,7 @@ public class BoardController {
                                                          {
                                                            "id": 19,
                                                            "createdAt": "2025-05-20T00:44:30",
+                                                           "modifiedAt": "2025-05-20T00:44:30",
                                                            "writer": "홍길동",
                                                            "title": "테스트 제목",
                                                            "contents": "테스트 내용입니다.",
@@ -183,6 +185,7 @@ public class BoardController {
                                                          {
                                                            "id": 20,
                                                            "createdAt": "2025-05-20T00:44:30",
+                                                           "modifiedAt": "2025-05-20T00:44:30",
                                                            "writer": "홍길동",
                                                            "title": "테스트 제목",
                                                            "contents": "테스트 내용입니다.",
@@ -233,6 +236,7 @@ public class BoardController {
                                                     {
                                                        "id": 1,
                                                        "createdAt": "2025-05-14T14:41:14.460Z",
+                                                       "modifiedAt": "2025-05-14T14:41:14.460Z",
                                                        "writer": "작성자",
                                                        "title": "글 제목 수정됨",
                                                        "contents": "글 내용 수정됨",
