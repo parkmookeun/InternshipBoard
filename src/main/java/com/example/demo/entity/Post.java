@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -47,6 +48,11 @@ public class Post {
     @JsonIgnore // JSON 응답에서 제외 - 무한 순환 참조 방지
     private List<Comment> comments = new ArrayList<>();
 
+    // 파일과의 관계
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("fileOrder ASC")
+    private List<PostFile> postFiles = new ArrayList<>();
+
     public Post(String writer, String title, String contents){
         this.writer = writer;
         this.title = title;
@@ -64,5 +70,27 @@ public class Post {
 
     public void updateContents(String contents){
         this.contents = contents;
+    }
+
+    // 편의 메서드
+    public void addFile(String originalName, String storedName, String filePath,
+                        Long fileSize, String mimeType, Integer fileOrder) {
+        PostFile postFile = new PostFile();
+        postFile.setPost(this);
+        postFile.setOriginalName(originalName);
+        postFile.setStoredName(storedName);
+        postFile.setFilePath(filePath);
+        postFile.setFileSize(fileSize);
+        postFile.setMimeType(mimeType);
+        postFile.setFileOrder(fileOrder != null ? fileOrder : postFiles.size());
+
+        postFiles.add(postFile);
+    }
+
+    public List<String> getImageUrls() {
+        return postFiles.stream()
+                .filter(pf -> pf.getMimeType().startsWith("image/"))
+                .map(PostFile::getFilePath)
+                .collect(Collectors.toList());
     }
 }
