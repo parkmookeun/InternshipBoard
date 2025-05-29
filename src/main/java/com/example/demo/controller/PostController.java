@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.entity.Board;
+import com.example.demo.entity.Post;
 import com.example.demo.global.ErrorResponse;
-import com.example.demo.service.BoardService;
+import com.example.demo.service.PostService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -19,17 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class BoardController {
+public class PostController {
 
-    private final BoardService boardService;
+    private final PostService PostService;
 
 
-    @PostMapping("/boards")
+    @PostMapping("/posts")
     @Tag(name = "게시글 등록", description = "게시글을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -37,7 +35,7 @@ public class BoardController {
                     description = "게시글 등록 성공",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BoardIdResponseDto.class),
+                            schema = @Schema(implementation = PostIdResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             name = "등록 성공시, 해당 게시글ID를 반환합니다.",
@@ -72,7 +70,7 @@ public class BoardController {
                     )
             )
     })
-    public ResponseEntity<BoardIdResponseDto> postBoard(
+    public ResponseEntity<PostIdResponseDto> postPost(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
@@ -91,15 +89,15 @@ public class BoardController {
                             }
                     )
             )
-            @Valid @RequestBody BoardPostRequestDto dto
+            @Valid @RequestBody PostRequestDto dto
     ){
-        BoardIdResponseDto responseDto = boardService.postBoard(dto);
+        PostIdResponseDto responseDto = PostService.postPost(dto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
 
-    @GetMapping("/boards/{boardId}")
+    @GetMapping("/posts/{postId}")
     @Tag(name = "게시글 조회", description = "게시글을 단건 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -107,7 +105,7 @@ public class BoardController {
                     description = "게시글 조회 성공",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BoardResponseDto.class),
+                            schema = @Schema(implementation = PostResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             name = "보드ID에 맞는 글을 반환합니다.",
@@ -148,16 +146,16 @@ public class BoardController {
                     )
             )
     })
-    public ResponseEntity<BoardResponseDto> findBoard(
-            @PathVariable("boardId") Long boardId
+    public ResponseEntity<PostResponseDto> findPost(
+            @PathVariable("postId") Long postId
     ){
-       BoardResponseDto responseDto = boardService.findBoard(boardId);
+       PostResponseDto responseDto = PostService.findPost(postId);
 
        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
 
-    @GetMapping("/boards")
+    @GetMapping("/posts")
     @Tag(name = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -165,7 +163,7 @@ public class BoardController {
                     description = "게시글 목록 조회 성공",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BoardResponseDto.class),
+                            schema = @Schema(implementation = PostResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             name = "게시글 목록을 리스트로 조회합니다.",
@@ -204,7 +202,7 @@ public class BoardController {
                             }
                     )
             )})
-    public ResponseEntity<PageResponseDto<Board>> findBoards(
+    public ResponseEntity<PageResponseDto<Post>> findPosts(
             @Parameter(description = "페이지 번호", example = "0")
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
 
@@ -212,14 +210,14 @@ public class BoardController {
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
 
     ){
-        Page<Board> boardPage = boardService.findBoards(pageSize, pageNumber);
+        Page<Post> PostPage = PostService.findPosts(pageSize, pageNumber);
 
-        PageResponseDto<Board> boardPageResponseDto = PageResponseDto.of(boardPage);
+        PageResponseDto<Post> PostPageResponseDto = PageResponseDto.of(PostPage);
 
-        return new ResponseEntity<>(boardPageResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(PostPageResponseDto, HttpStatus.OK);
     }
 
-    @PutMapping("/boards/{boardId}")
+    @PutMapping("/posts/{postId}")
     @Tag(name = "게시글 수정", description = "게시글을 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -227,7 +225,7 @@ public class BoardController {
                     description = "게시글 수정 성공",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BoardResponseDto.class),
+                            schema = @Schema(implementation = PostResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             name = "보드ID에 해당하는 게시글을 수정합니다.",
@@ -288,8 +286,8 @@ public class BoardController {
                     )
             )
     })
-    public ResponseEntity<BoardResponseDto> updateBoard(
-            @PathVariable("boardId") Long boardId,
+    public ResponseEntity<PostResponseDto> updatePost(
+            @PathVariable("postId") Long postId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
@@ -307,15 +305,15 @@ public class BoardController {
                             }
                     )
             )
-            @Valid @RequestBody BoardUpdateRequestDto dto
+            @Valid @RequestBody PostUpdateRequestDto dto
     ){
-        BoardResponseDto responseDto = boardService.updateBoard(boardId, dto);
+        PostResponseDto responseDto = PostService.updatePost(postId, dto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/posts/{postId}")
     @Tag(name = "게시글 삭제", description = "게시글을 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -346,11 +344,11 @@ public class BoardController {
                     )
             )
     })
-    public ResponseEntity<Void> deleteBoard(
-        @PathVariable("boardId") Long boardId
+    public ResponseEntity<Void> deletePost(
+        @PathVariable("postId") Long postId
     ){
 
-        boardService.deleteBoard(boardId);
+        PostService.deletePost(postId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Board {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class Board {
     private Long views; // 조회 수
 
 
-    public Board(String writer, String title, String contents){
+    public Post(String writer, String title, String contents){
         this.writer = writer;
         this.title = title;
         this.contents = contents;

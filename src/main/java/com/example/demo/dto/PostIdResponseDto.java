@@ -3,10 +3,10 @@ package com.example.demo.dto;
 import lombok.Getter;
 
 @Getter
-public class BoardIdResponseDto {
+public class PostIdResponseDto {
     Long id;
 
-    public BoardIdResponseDto(Long id){
+    public PostIdResponseDto(Long id){
         this.id = id;
     }
 }
