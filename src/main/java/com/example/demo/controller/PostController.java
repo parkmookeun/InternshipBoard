@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class PostController {
 
-    private final PostService PostService;
+    private final PostService postService;
 
 
     @PostMapping("/posts")
@@ -91,7 +91,7 @@ public class PostController {
             )
             @Valid @RequestBody PostRequestDto dto
     ){
-        PostIdResponseDto responseDto = PostService.postPost(dto);
+        PostIdResponseDto responseDto = postService.postPost(dto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -149,7 +149,7 @@ public class PostController {
     public ResponseEntity<PostResponseDto> findPost(
             @PathVariable("postId") Long postId
     ){
-       PostResponseDto responseDto = PostService.findPost(postId);
+       PostResponseDto responseDto = postService.findPost(postId);
 
        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -210,11 +210,11 @@ public class PostController {
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
 
     ){
-        Page<Post> PostPage = PostService.findPosts(pageSize, pageNumber);
+        Page<Post> postPage = postService.findPosts(pageSize, pageNumber);
 
-        PageResponseDto<Post> PostPageResponseDto = PageResponseDto.of(PostPage);
+        PageResponseDto<Post> postPageResponseDto = PageResponseDto.of(postPage);
 
-        return new ResponseEntity<>(PostPageResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(postPageResponseDto, HttpStatus.OK);
     }
 
     @PutMapping("/posts/{postId}")
@@ -307,7 +307,7 @@ public class PostController {
             )
             @Valid @RequestBody PostUpdateRequestDto dto
     ){
-        PostResponseDto responseDto = PostService.updatePost(postId, dto);
+        PostResponseDto responseDto = postService.updatePost(postId, dto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -348,7 +348,7 @@ public class PostController {
         @PathVariable("postId") Long postId
     ){
 
-        PostService.deletePost(postId);
+        postService.deletePost(postId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

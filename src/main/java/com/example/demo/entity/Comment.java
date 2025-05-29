@@ -8,19 +8,21 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    @JsonIgnore
+    private Post post;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -31,38 +33,18 @@ public class Post {
     private LocalDateTime modifiedAt;
 
     @Column
-    private String writer; // 작성자
+    private String writer;
 
     @Column
-    private String title; // 글 제목
+    private String contents;
 
-    @Column
-    private String contents; // 글 내용
-
-    @Column
-    private Long views; // 조회 수
-
-    // 게시글이 삭제되면 댓글도 함께 삭제 (CASCADE)
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // JSON 응답에서 제외 - 무한 순환 참조 방지
-    private List<Comment> comments = new ArrayList<>();
-
-    public Post(String writer, String title, String contents){
+    public Comment(String writer, String contents, Post post){
         this.writer = writer;
-        this.title = title;
         this.contents = contents;
-        this.views = 0L;
+        this.post = post;
     }
 
-    public void increaseViews(){
-        this.views++;
-    }
-
-    public void updateTitle(String title){
-        this.title = title;
-    }
-
-    public void updateContents(String contents){
+    public void updateCotents(String contents){
         this.contents = contents;
     }
 }
