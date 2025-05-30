@@ -5,6 +5,8 @@ import com.example.demo.dto.PostRequestDto;
 import com.example.demo.dto.PostResponseDto;
 import com.example.demo.dto.PostUpdateRequestDto;
 import com.example.demo.entity.Post;
+import com.example.demo.entity.PostFile;
+import com.example.demo.repository.PostFileRepository;
 import com.example.demo.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,19 +15,38 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
     private final PostRepository PostRepository;
+    private final PostFileRepository postFileRepository;
+    private final S3Service s3Service;
 
     // 게시글 등록
-    public PostIdResponseDto postPost(PostRequestDto dto) {
-        Post Post = new Post(dto.getWriter(), dto.getTitle(), dto.getContents());
+    public PostIdResponseDto createPost(PostRequestDto dto, List<MultipartFile> files) {
+        Post post = new Post(dto.getWriter(), dto.getTitle(), dto.getContents());
 
-        Post savedPost = PostRepository.save(Post);
+        Post savedPost = PostRepository.save(post);
 
         Post foundPost = PostRepository.findByIdOrElseThrow(savedPost.getId());
+
+        // 2. 파일 업로드 및 연결
+        if (files != null && !files.isEmpty()) {
+            List<PostFile> postFiles = s3Service.uploadFilesForPost(files, post);
+
+            // PostFile들을 Post에 추가
+            for (PostFile postFile : postFiles) {
+                post.getPostFiles().add(postFile);
+            }
+
+            // PostFile들 저장
+            postFileRepository.saveAll(postFiles);
+        }
 
         return new PostIdResponseDto(foundPost.getId());
     }

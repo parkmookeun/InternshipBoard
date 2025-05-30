@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +29,16 @@ public class PostController {
 
     private final PostService postService;
 
+    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> test(
+            @RequestPart("post") String postData,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
+    ) {
 
-    @PostMapping("/posts")
+        return ResponseEntity.ok("성공: " + postData);
+    }
+
+    @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Tag(name = "게시글 등록", description = "게시글을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -70,7 +81,7 @@ public class PostController {
                     )
             )
     })
-    public ResponseEntity<PostIdResponseDto> postPost(
+    public ResponseEntity<PostIdResponseDto> createPost(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
@@ -89,9 +100,13 @@ public class PostController {
                             }
                     )
             )
-            @Valid @RequestBody PostRequestDto dto
+            @Valid @RequestPart("title") String title,
+            @Valid @RequestPart("writer") String writer,
+            @Valid @RequestPart("contents") String contents,
+            @RequestPart(value= "files", required = false) List<MultipartFile> files
     ){
-        PostIdResponseDto responseDto = postService.postPost(dto);
+        PostRequestDto requestDto = new PostRequestDto(writer,title,contents);
+        PostIdResponseDto responseDto = postService.createPost(requestDto, files);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

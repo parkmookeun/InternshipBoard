@@ -50,6 +50,7 @@ public class Post {
 
     // 파일과의 관계
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @OrderBy("fileOrder ASC")
     private List<PostFile> postFiles = new ArrayList<>();
 
