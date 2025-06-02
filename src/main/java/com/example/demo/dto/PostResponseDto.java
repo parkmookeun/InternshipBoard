@@ -1,9 +1,13 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
+import com.example.demo.entity.PostFile;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 public class PostResponseDto {
@@ -14,6 +18,8 @@ public class PostResponseDto {
     private String title;
     private String contents;
     private Long views;
+    private List<Comment> commentList;
+    private List<PostFile> fileList;
 
     public PostResponseDto(Post post){
         this.id = post.getId();
@@ -23,6 +29,8 @@ public class PostResponseDto {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.views = post.getViews();
+        this.commentList = post.getComments();
+        this.fileList = post.getPostFiles();
     }
 
 }
