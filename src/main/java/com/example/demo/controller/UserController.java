@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequestDto;
+import com.example.demo.dto.LoginResponseDto;
 import com.example.demo.dto.UserSignUpRequestDto;
 import com.example.demo.dto.UserSignUpResponseDto;
 import com.example.demo.service.UserService;
@@ -23,6 +25,14 @@ public class UserController {
     ){
         UserSignUpResponseDto responseDto = userService.signUp(dto);
 
-        return new ResponseEntity<UserSignUpResponseDto>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(
+            @RequestBody LoginRequestDto dto){
+       LoginResponseDto responseDto = userService.login(dto);
+
+       return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

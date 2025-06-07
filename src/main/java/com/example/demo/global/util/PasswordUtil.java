@@ -1,4 +1,4 @@
-package com.example.demo.global;
+package com.example.demo.global.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
