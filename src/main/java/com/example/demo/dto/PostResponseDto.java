@@ -18,7 +18,6 @@ public class PostResponseDto {
     private String title;
     private String contents;
     private Long views;
-    private List<Comment> commentList;
     private List<PostFile> fileList;
 
     public PostResponseDto(Post post){
@@ -29,7 +28,6 @@ public class PostResponseDto {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.views = post.getViews();
-        this.commentList = post.getComments();
         this.fileList = post.getPostFiles();
     }
 
