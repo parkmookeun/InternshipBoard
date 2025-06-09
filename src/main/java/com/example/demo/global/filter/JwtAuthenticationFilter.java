@@ -31,6 +31,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
+        // ✅ JWT 검증이 필요 없는 경로들 제외
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
+
+        // ✅ 디버깅 로그 추가
+        System.out.println("=== JWT 필터 실행 ===");
+        System.out.println("요청 URI: " + requestURI);
+        System.out.println("HTTP 메서드: " + method);
+
+        System.out.println("JWT 검증 진행: " + requestURI);
+
         final String requestTokenHeader = request.getHeader("Authorization");
 
         String username = null;
